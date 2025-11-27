@@ -1,0 +1,166 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "A ArgProp" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e5]: A
+        - generic [ref=e6]: ArgProp
+      - generic [ref=e7]:
+        - link "Explorar" [ref=e8] [cursor=pointer]:
+          - /url: /search
+        - generic [ref=e9]:
+          - link "Ingresar" [ref=e10] [cursor=pointer]:
+            - /url: /login
+            - button "Ingresar" [ref=e11]
+          - link "Crear Cuenta" [ref=e12] [cursor=pointer]:
+            - /url: /login?view=sign_up
+            - button "Crear Cuenta" [ref=e13]
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - img "Costa Argentina" [ref=e19]
+        - generic [ref=e21]:
+          - generic [ref=e22]:
+            - img [ref=e23]
+            - generic [ref=e25]: "La plataforma #1 de la Costa Atlántica"
+          - heading "Tu lugar en la playa, directo con su dueño." [level=1] [ref=e26]:
+            - text: Tu lugar en la playa,
+            - text: directo con su dueño.
+          - paragraph [ref=e27]:
+            - text: Alquileres temporales y ventas en Miramar, Mar del Plata y toda la costa.
+            - text: Seguridad garantizada y trato directo.
+          - generic [ref=e28]:
+            - link "Buscar Alquiler" [ref=e30] [cursor=pointer]:
+              - /url: /search?op=rent
+              - button "Buscar Alquiler" [ref=e31]:
+                - img
+                - text: Buscar Alquiler
+            - link "Comprar Propiedad" [ref=e33] [cursor=pointer]:
+              - /url: /search?op=sale
+              - button "Comprar Propiedad" [ref=e34]:
+                - img
+                - text: Comprar Propiedad
+        - generic [ref=e37]: Explorar
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - heading "La forma segura de alquilar en la Costa" [level=2] [ref=e42]
+          - paragraph [ref=e43]: Olvidate de las estafas y las comisiones abusivas. Creamos una comunidad de confianza para tus vacaciones.
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - img [ref=e47]
+            - heading "Encontrá tu lugar ideal" [level=3] [ref=e50]
+            - paragraph [ref=e51]: Desde departamentos frente al mar hasta casas en el bosque. Filtros reales para necesidades reales.
+          - generic [ref=e52]:
+            - img [ref=e54]
+            - heading "Verificación de Identidad" [level=3] [ref=e57]
+            - paragraph [ref=e58]: "Validamos que cada propietario sea quien dice ser. Tu tranquilidad es nuestra prioridad #1."
+          - generic [ref=e59]:
+            - img [ref=e61]
+            - heading "Trato Directo y Rápido" [level=3] [ref=e63]
+            - paragraph [ref=e64]: Sin intermediarios que demoran todo. Hablá directo por WhatsApp y reservá en el momento.
+      - generic [ref=e68]:
+        - heading "¿Tenés una propiedad?" [level=2] [ref=e69]
+        - paragraph [ref=e70]: Publicá gratis hoy mismo y empezá a recibir consultas de calidad. Sin costos fijos ni contratos de exclusividad.
+        - link "Publicar mi Propiedad Gratis" [ref=e71] [cursor=pointer]:
+          - /url: /publish
+          - button "Publicar mi Propiedad Gratis" [ref=e72]:
+            - text: Publicar mi Propiedad Gratis
+            - img
+  - region "Notifications alt+T"
+  - generic [active]:
+    - generic [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - navigation [ref=e78]:
+            - button "previous" [disabled] [ref=e79]:
+              - img "previous" [ref=e80]
+            - generic [ref=e82]:
+              - generic [ref=e83]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e84]:
+              - img "next" [ref=e85]
+          - img
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - img [ref=e89]
+            - generic "Latest available version is detected (16.0.4)." [ref=e91]: Next.js 16.0.4
+            - generic [ref=e92]: Turbopack
+          - img
+      - dialog "Build Error" [ref=e94]:
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - generic [ref=e101]: Build Error
+              - generic [ref=e102]:
+                - button "Copy Error Info" [ref=e103] [cursor=pointer]:
+                  - img [ref=e104]
+                - link "Go to related documentation" [ref=e106] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/api-reference/directives/use-client
+                  - img [ref=e107]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e109] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e110]
+            - generic [ref=e119]: Ecmascript file had an error
+          - generic [ref=e121]:
+            - generic [ref=e123]:
+              - img [ref=e125]
+              - generic [ref=e128]: ./app/search/page.tsx (7:20)
+              - button "Open in editor" [ref=e129] [cursor=pointer]:
+                - img [ref=e131]
+            - generic [ref=e134]:
+              - generic [ref=e135]: Ecmascript file had an error
+              - generic [ref=e136]: 5 |
+              - text: import
+              - generic [ref=e137]: "{"
+              - text: Input
+              - generic [ref=e138]: "}"
+              - text: from '@/components/ui/input'
+              - generic [ref=e139]: 6 |
+              - text: import
+              - generic [ref=e140]: "{"
+              - text: Search, Map as MapIcon, List, SlidersHorizontal
+              - generic [ref=e141]: "}"
+              - text: from 'lucide-react' >
+              - generic [ref=e142]: 7 |
+              - text: import
+              - generic [ref=e143]: "{ useState"
+              - text: ","
+              - generic [ref=e144]: "useEffect }"
+              - text: from 'react'
+              - generic [ref=e145]: "|"
+              - text: ^^^^^^^^^
+              - generic [ref=e146]: 8 |
+              - text: import
+              - generic [ref=e147]: dynamic
+              - text: from 'next/dynamic'
+              - generic [ref=e148]: 9 |
+              - text: import
+              - generic [ref=e149]: "{"
+              - text: SearchFilters
+              - generic [ref=e150]: "}"
+              - text: from '@/components/search-filters'
+              - generic [ref=e151]: 10 |
+              - text: import
+              - generic [ref=e152]: "{"
+              - text: Sheet, SheetContent, SheetTrigger
+              - generic [ref=e153]: "}"
+              - text: from '@/components/ui/sheet'
+              - generic [ref=e154]:
+                - text: "You're importing a component that needs `useEffect`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `\"use client\"` directive. Learn more:"
+                - link "https://nextjs.org/docs/app/api-reference/directives/use-client" [ref=e155] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/api-reference/directives/use-client
+        - generic [ref=e156]: "1"
+        - generic [ref=e157]: "2"
+    - generic [ref=e162] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e163]:
+        - img [ref=e164]
+      - button "Open issues overlay" [ref=e168]:
+        - generic [ref=e169]:
+          - generic [ref=e170]: "0"
+          - generic [ref=e171]: "1"
+        - generic [ref=e172]: Issue
+  - alert [ref=e173]
+```
