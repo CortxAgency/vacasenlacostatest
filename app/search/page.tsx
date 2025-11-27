@@ -1,3 +1,16 @@
+'use client'
+
+import dynamic from 'next/dynamic'
+import { PropertyCard } from '@/components/property-card'
+import { PropertyCardSkeleton } from '@/components/property-card-skeleton'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Search, Map as MapIcon, List, SlidersHorizontal } from 'lucide-react'
+import { useState, useEffect, Suspense } from 'react'
+import { SearchFilters } from '@/components/search-filters'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { getProperties } from '@/actions/get-properties'
+import { useSearchParams } from 'next/navigation'
 
 // Dynamically import Map to avoid SSR issues with Leaflet
 const PropertyMap = dynamic(() => import('@/components/property-map'), {
@@ -5,11 +18,8 @@ const PropertyMap = dynamic(() => import('@/components/property-map'), {
     loading: () => <div className="h-full w-full bg-muted animate-pulse flex items-center justify-center">Cargando mapa...</div>
 })
 
-export default function SearchPage({
-    searchParams,
-}: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
+function SearchContent() {
+    const searchParams = useSearchParams()
     const [showMap, setShowMap] = useState(false)
     const [properties, setProperties] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -17,11 +27,10 @@ export default function SearchPage({
     useEffect(() => {
         const fetchProps = async () => {
             setLoading(true)
-            const params = await searchParams
-            const operation = typeof params.op === 'string' ? params.op : undefined
-            const minPrice = typeof params.minPrice === 'string' ? parseInt(params.minPrice) : undefined
-            const maxPrice = typeof params.maxPrice === 'string' ? parseInt(params.maxPrice) : undefined
-            const rooms = typeof params.rooms === 'string' ? parseInt(params.rooms) : undefined
+            const operation = searchParams.get('op') || undefined
+            const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined
+            const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined
+            const rooms = searchParams.get('rooms') ? parseInt(searchParams.get('rooms')!) : undefined
 
             const data = await getProperties({
                 operation_type: operation,
@@ -130,5 +139,13 @@ export default function SearchPage({
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<div className="container py-8">Cargando buscador...</div>}>
+            <SearchContent />
+        </Suspense>
     )
 }
