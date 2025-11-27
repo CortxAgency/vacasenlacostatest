@@ -203,6 +203,45 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div className="container px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2 mb-4 text-white">
+                <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-lg">A</div>
+                <span className="text-xl font-bold">Vacas en la Costa</span>
+              </div>
+              <p className="max-w-sm text-slate-500">
+                La plataforma líder para encontrar tu alojamiento ideal en la costa argentina. Conectamos dueños y viajeros de forma directa y segura.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Plataforma</h4>
+              <ul className="space-y-2">
+                <li><Link href="/search" className="hover:text-white transition-colors">Explorar</Link></li>
+                <li><Link href="/publish" className="hover:text-white transition-colors">Publicar Propiedad</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Ingresar</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li><Link href="#" className="hover:text-white transition-colors">Términos y Condiciones</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Política de Privacidad</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Ayuda</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <p>© {new Date().getFullYear()} Vacas en la Costa. Todos los derechos reservados.</p>
+            <div className="flex gap-4">
+              {/* Social links placeholder */}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
