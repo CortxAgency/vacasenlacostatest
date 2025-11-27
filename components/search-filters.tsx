@@ -57,14 +57,14 @@ export function SearchFilters({ onClose }: { onClose?: () => void }) {
             {/* Operation Type */}
             <div className="space-y-3">
                 <Label>Tipo de Operación</Label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     {['rent', 'sale', 'temporary'].map((op) => (
                         <Button
                             key={op}
                             variant={operation === op ? 'default' : 'outline'}
                             size="sm"
                             onClick={() => setOperation(operation === op ? '' : op)}
-                            className="flex-1 capitalize rounded-xl"
+                            className="flex-1 min-w-[80px] capitalize rounded-xl"
                         >
                             {op === 'rent' ? 'Alquiler' : op === 'sale' ? 'Venta' : 'Temporal'}
                         </Button>

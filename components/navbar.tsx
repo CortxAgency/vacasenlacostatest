@@ -66,7 +66,7 @@ export function Navbar() {
                         A
                     </div>
                     <span className={cn(
-                        "text-xl font-bold tracking-tight transition-colors",
+                        "text-xl font-bold tracking-tight transition-colors hidden sm:block",
                         scrolled ? "text-foreground" : "text-white"
                     )}>
                         Vacas en la Costa
@@ -167,6 +167,10 @@ export function Navbar() {
                         </SheetTrigger>
                         <SheetContent>
                             <div className="flex flex-col gap-4 mt-8">
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className="text-sm font-medium text-muted-foreground">Tema</span>
+                                    <ModeToggle />
+                                </div>
                                 <Link href="/search">
                                     <Button variant="ghost" className="w-full justify-start text-lg">
                                         Explorar Propiedades

@@ -11,11 +11,14 @@ import { Loader2 } from 'lucide-react'
 
 function LoginForm() {
     const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+    const [authMode, setAuthMode] = useState<'magic_link' | 'password'>('magic_link')
     const router = useRouter()
     const searchParams = useSearchParams()
     const view = searchParams.get('view')
+    const isSignUp = view === 'sign_up'
     const supabase = createClient()
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -24,19 +27,43 @@ function LoginForm() {
         setMessage(null)
 
         try {
-            const { error } = await supabase.auth.signInWithOtp({
-                email,
-                options: {
-                    emailRedirectTo: `${location.origin}/auth/callback`,
-                },
-            })
-
-            if (error) throw error
-
-            setMessage({
-                type: 'success',
-                text: '¡Enlace mágico enviado! Revisa tu correo electrónico.'
-            })
+            if (authMode === 'magic_link') {
+                const { error } = await supabase.auth.signInWithOtp({
+                    email,
+                    options: {
+                        emailRedirectTo: `${location.origin}/auth/callback`,
+                    },
+                })
+                if (error) throw error
+                setMessage({
+                    type: 'success',
+                    text: '¡Enlace mágico enviado! Revisa tu correo electrónico.'
+                })
+            } else {
+                // Password Mode
+                if (isSignUp) {
+                    const { error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            emailRedirectTo: `${location.origin}/auth/callback`,
+                        },
+                    })
+                    if (error) throw error
+                    setMessage({
+                        type: 'success',
+                        text: '¡Cuenta creada! Revisa tu correo para confirmar.'
+                    })
+                } else {
+                    const { error } = await supabase.auth.signInWithPassword({
+                        email,
+                        password,
+                    })
+                    if (error) throw error
+                    router.push('/dashboard')
+                    router.refresh()
+                }
+            }
         } catch (error: any) {
             setMessage({
                 type: 'error',
@@ -61,10 +88,12 @@ function LoginForm() {
         <Card className="w-full max-w-md">
             <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold text-center">
-                    {view === 'sign_up' ? 'Crear Cuenta' : 'Iniciar Sesión'}
+                    {isSignUp ? 'Crear Cuenta' : 'Iniciar Sesión'}
                 </CardTitle>
                 <CardDescription className="text-center">
-                    Ingresa tu email para recibir un enlace de acceso rápido
+                    {isSignUp
+                        ? 'Regístrate para publicar y guardar propiedades'
+                        : 'Ingresa a tu cuenta para gestionar tus propiedades'}
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
@@ -76,6 +105,7 @@ function LoginForm() {
                         Continuar con Google
                     </Button>
                 </div>
+
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t" />
@@ -86,30 +116,84 @@ function LoginForm() {
                         </span>
                     </div>
                 </div>
+
+                <div className="flex gap-2 p-1 bg-muted rounded-lg">
+                    <button
+                        type="button"
+                        onClick={() => setAuthMode('magic_link')}
+                        className={`flex-1 text-sm font-medium py-1.5 rounded-md transition-all ${authMode === 'magic_link' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        Magic Link
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setAuthMode('password')}
+                        className={`flex-1 text-sm font-medium py-1.5 rounded-md transition-all ${authMode === 'password' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        Contraseña
+                    </button>
+                </div>
+
                 <form onSubmit={handleLogin}>
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="m@ejemplo.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+                    <div className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="m@ejemplo.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {authMode === 'password' && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="password">Contraseña</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        )}
+
+                        <Button className="w-full" type="submit" disabled={loading}>
+                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {authMode === 'magic_link'
+                                ? 'Enviar Enlace Mágico'
+                                : (isSignUp ? 'Registrarse' : 'Iniciar Sesión')}
+                        </Button>
                     </div>
-                    <Button className="w-full mt-4" type="submit" disabled={loading}>
-                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Enviar Enlace Mágico
-                    </Button>
                 </form>
+
                 {message && (
-                    <div className={`p-3 rounded-md text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    <div className={`p-3 rounded-md text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
                         {message.text}
                     </div>
                 )}
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-4">
+                <div className="text-sm text-center">
+                    {isSignUp ? (
+                        <span>
+                            ¿Ya tienes cuenta?{' '}
+                            <button onClick={() => router.push('/login')} className="text-primary hover:underline font-medium">
+                                Iniciar Sesión
+                            </button>
+                        </span>
+                    ) : (
+                        <span>
+                            ¿No tienes cuenta?{' '}
+                            <button onClick={() => router.push('/login?view=sign_up')} className="text-primary hover:underline font-medium">
+                                Crear Cuenta
+                            </button>
+                        </span>
+                    )}
+                </div>
                 <p className="text-xs text-center text-muted-foreground w-full">
                     Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad.
                 </p>
