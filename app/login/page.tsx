@@ -37,7 +37,7 @@ function LoginForm() {
                 if (error) throw error
                 setMessage({
                     type: 'success',
-                    text: '¡Enlace mágico enviado! Revisa tu correo electrónico.'
+                    text: '¡Enlace de acceso enviado! Revisa tu correo electrónico.'
                 })
             } else {
                 // Password Mode
@@ -123,7 +123,7 @@ function LoginForm() {
                         onClick={() => setAuthMode('magic_link')}
                         className={`flex-1 text-sm font-medium py-1.5 rounded-md transition-all ${authMode === 'magic_link' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                     >
-                        Magic Link
+                        Acceso sin contraseña
                     </button>
                     <button
                         type="button"
@@ -164,7 +164,7 @@ function LoginForm() {
                         <Button className="w-full" type="submit" disabled={loading}>
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             {authMode === 'magic_link'
-                                ? 'Enviar Enlace Mágico'
+                                ? 'Enviar enlace de acceso'
                                 : (isSignUp ? 'Registrarse' : 'Iniciar Sesión')}
                         </Button>
                     </div>
