@@ -62,25 +62,29 @@ export function Navbar() {
                 : "bg-transparent border-transparent py-4"
         )}>
             <div className="container flex items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-2 group">
-                    {/* Show logo only when scrolled (white background) to hide potential white box of the image */}
-                    <div className={cn(
-                        "relative h-10 w-10 overflow-hidden rounded-lg transition-all duration-300",
-                        scrolled ? "opacity-100 scale-100" : "opacity-0 scale-0 w-0"
-                    )}>
-                        <Image
-                            src="/logo.png"
-                            alt="Vacas en la Costa Logo"
-                            fill
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div className="relative h-14 w-14 overflow-hidden transition-transform group-hover:scale-105">
+                        <Image 
+                            src="/realpnglogo.png" 
+                            alt="Vacas en la Costa Logo" 
+                            fill 
                             className="object-contain"
                         />
                     </div>
-                    <span className={cn(
-                        "text-xl font-bold tracking-tight transition-colors",
-                        scrolled ? "text-foreground" : "text-white text-2xl"
-                    )}>
-                        Vacas en la Costa
-                    </span>
+                    {scrolled ? (
+                        <span className="text-xl font-bold tracking-tight transition-colors text-foreground hidden sm:block">
+                            Vacas en la Costa
+                        </span>
+                    ) : (
+                        <div className="relative h-10 w-48 hidden sm:block">
+                            <Image
+                                src="/logo-text-premium.png"
+                                alt="Vacas en la Costa"
+                                fill
+                                className="object-contain object-left"
+                            />
+                        </div>
+                    )}
                 </Link>
 
                 {/* Desktop Menu */}

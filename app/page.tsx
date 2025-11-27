@@ -211,9 +211,9 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center gap-2 mb-4 text-white">
-                <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                <div className="relative h-12 w-12 overflow-hidden rounded-lg">
                   <Image
-                    src="/logo.png"
+                    src="/realpnglogo.png"
                     alt="Vacas en la Costa Logo"
                     fill
                     className="object-contain"
