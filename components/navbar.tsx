@@ -63,28 +63,24 @@ export function Navbar() {
         )}>
             <div className="container flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="relative h-10 w-10 overflow-hidden rounded-lg group-hover:scale-110 transition-transform">
+                    {/* Show logo only when scrolled (white background) to hide potential white box of the image */}
+                    <div className={cn(
+                        "relative h-10 w-10 overflow-hidden rounded-lg transition-all duration-300",
+                        scrolled ? "opacity-100 scale-100" : "opacity-0 scale-0 w-0"
+                    )}>
                         <Image
-                            src="/logo-icon.png"
-                            alt="Vacas en la Costa Icon"
+                            src="/logo.png"
+                            alt="Vacas en la Costa Logo"
                             fill
                             className="object-contain"
                         />
                     </div>
-                    {scrolled ? (
-                        <span className="text-xl font-bold tracking-tight transition-colors text-foreground hidden sm:block">
-                            Vacas en la Costa
-                        </span>
-                    ) : (
-                        <div className="relative h-8 w-40 hidden sm:block">
-                            <Image
-                                src="/logo-text-white.png"
-                                alt="Vacas en la Costa"
-                                fill
-                                className="object-contain object-left"
-                            />
-                        </div>
-                    )}
+                    <span className={cn(
+                        "text-xl font-bold tracking-tight transition-colors",
+                        scrolled ? "text-foreground" : "text-white text-2xl"
+                    )}>
+                        Vacas en la Costa
+                    </span>
                 </Link>
 
                 {/* Desktop Menu */}
