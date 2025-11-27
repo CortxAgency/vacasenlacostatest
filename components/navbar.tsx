@@ -64,10 +64,10 @@ export function Navbar() {
             <div className="container flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-3 group">
                     <div className="relative h-14 w-14 overflow-hidden transition-transform group-hover:scale-105">
-                        <Image 
-                            src="/realpnglogo.png" 
-                            alt="Vacas en la Costa Logo" 
-                            fill 
+                        <Image
+                            src="/realpnglogo.png"
+                            alt="Vacas en la Costa Logo"
+                            fill
                             className="object-contain"
                         />
                     </div>
@@ -76,7 +76,7 @@ export function Navbar() {
                             Vacas en la Costa
                         </span>
                     ) : (
-                        <div className="relative h-10 w-48 hidden sm:block">
+                        <div className="relative h-16 w-64 hidden sm:block">
                             <Image
                                 src="/logo-text-premium.png"
                                 alt="Vacas en la Costa"
