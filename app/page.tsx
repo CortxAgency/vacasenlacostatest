@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Search, Home, Key, Calendar, ArrowRight, ShieldCheck, Zap, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -210,7 +211,14 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center gap-2 mb-4 text-white">
-                <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center font-bold text-lg">A</div>
+                <div className="relative h-10 w-10 overflow-hidden rounded-lg">
+                  <Image
+                    src="/logo.png"
+                    alt="Vacas en la Costa Logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
                 <span className="text-xl font-bold">Vacas en la Costa</span>
               </div>
               <p className="max-w-sm text-slate-500">

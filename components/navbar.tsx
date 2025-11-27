@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/utils/supabase/client'
 import { useEffect, useState } from 'react'
@@ -62,8 +63,13 @@ export function Navbar() {
         )}>
             <div className="container flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-110 transition-transform">
-                        A
+                    <div className="relative h-10 w-10 overflow-hidden rounded-lg group-hover:scale-110 transition-transform">
+                        <Image
+                            src="/logo.png"
+                            alt="Vacas en la Costa Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                     <span className={cn(
                         "text-xl font-bold tracking-tight transition-colors hidden sm:block",
