@@ -76,7 +76,7 @@ export function Navbar() {
                             Vacas en la Costa
                         </span>
                     ) : (
-                        <div className="relative h-16 w-64 hidden sm:block">
+                        <div className="relative h-24 w-[500px] hidden sm:block">
                             <Image
                                 src="/logo-text-premium.png"
                                 alt="Vacas en la Costa"
