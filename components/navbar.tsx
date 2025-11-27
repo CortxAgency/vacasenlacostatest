@@ -18,6 +18,7 @@ import { LogOut, User as UserIcon, LayoutDashboard, PlusCircle, Menu, Heart } fr
 import { useRouter } from 'next/navigation'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
+import { ModeToggle } from '@/components/mode-toggle'
 
 export function Navbar() {
     const [user, setUser] = useState<User | null>(null)
@@ -86,6 +87,7 @@ export function Navbar() {
 
                     {user ? (
                         <div className="flex items-center gap-4">
+                            <ModeToggle />
                             <Link href="/publish">
                                 <Button
                                     variant={scrolled ? "default" : "secondary"}
@@ -133,6 +135,7 @@ export function Navbar() {
                         </div>
                     ) : (
                         <div className="flex items-center gap-3">
+                            <ModeToggle />
                             <Link href="/login">
                                 <Button variant="ghost" className={cn(
                                     scrolled ? "text-foreground" : "text-white hover:bg-white/10 hover:text-white"

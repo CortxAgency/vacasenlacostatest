@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
-import { Toaster } from 'sonner';
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Vacas en la Costa | Alquileres Temporales',
-    template: '%s | Vacas en la Costa'
-  }, description: "La plataforma inmobiliaria más rápida y segura de Argentina. Dueño directo sin comisiones ocultas.",
+  title: "Vacas en la Costa | Alquileres Temporales",
+  description: "Encontrá tu alojamiento ideal en la costa argentina.",
 };
 
 export default function RootLayout({
@@ -19,13 +18,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
-        <Navbar />
-        <main className="min-h-screen bg-background">
-          {children}
-        </main>
-        <Toaster richColors position="bottom-right" />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main>
+            {children}
+          </main>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
