@@ -7,13 +7,7 @@ import { MapPin, Check, MessageCircle, Share2, Heart, ShieldCheck } from 'lucide
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { PropertyActions } from '@/components/property-actions'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
-
-const PropertyMap = dynamic(() => import('@/components/property-map'), {
-    ssr: false,
-    loading: () => <div className="h-[400px] w-full bg-muted animate-pulse rounded-3xl" />
-})
+import PropertyMapWrapper from '@/components/property-map-wrapper'
 
 export default async function PropertyDetailPage({
     params,
