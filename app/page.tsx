@@ -57,24 +57,24 @@ export default function HomePage() {
               <span className="text-sm font-medium tracking-wide">La plataforma #1 de Vacas en la Costa</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white drop-shadow-xl h-[160px] md:h-auto">
-              Tu lugar en{' '}
-              <span className="relative inline-block min-w-[200px] text-left">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white drop-shadow-xl min-h-[160px] md:min-h-0 flex flex-col md:block items-center">
+              <span>Tu lugar en </span>
+              <span className="relative inline-flex justify-start min-w-[220px] md:min-w-[300px] h-[1.2em] overflow-hidden align-bottom">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={textIndex}
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 40, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute top-0 left-0 text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-blue-200"
+                    exit={{ y: -40, opacity: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="absolute left-0 text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-white to-blue-200 whitespace-nowrap"
                   >
                     {texts[textIndex]}
                   </motion.span>
                 </AnimatePresence>
-                <span className="invisible">{texts[0]}</span> {/* Spacer */}
+                <span className="invisible">{texts[1]}</span> {/* Spacer based on longest text */}
               </span>
-              <br />
+              <br className="hidden md:block" />
               <span className="block mt-2">directo con su dueño.</span>
             </h1>
 
