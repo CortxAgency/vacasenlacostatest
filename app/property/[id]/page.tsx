@@ -15,7 +15,10 @@ const PropertyMap = dynamic(() => import('@/components/property-map'), {
     loading: () => <div className="h-[400px] w-full bg-muted animate-pulse rounded-3xl" />
 })
 
-params: Promise<{ id: string }>
+export default async function PropertyDetailPage({
+    params,
+}: {
+    params: Promise<{ id: string }>
 }) {
     const { id } = await params
     const property = await getPropertyById(id)
@@ -25,7 +28,7 @@ params: Promise<{ id: string }>
     }
 
     return {
-        title: `${property.title} | ArgProp`,
+        title: `${property.title} | Vacas en la Costa`,
         description: `Mira esta propiedad en ${property.address}. ${property.operation_type === 'rent' ? 'Alquiler' : 'Venta'} por ${property.currency} ${property.price}.`,
         openGraph: {
             title: property.title,
@@ -34,10 +37,6 @@ params: Promise<{ id: string }>
         },
     }
 }
-
-export default async function PropertyDetailPage({
-    params,
-}: {
 export async function generateMetadata({
     params,
 }: {

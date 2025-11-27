@@ -2,6 +2,8 @@ import { getProperties } from '@/actions/get-properties'
 import { PropertyCard } from '@/components/property-card'
 import { PropertyCardSkeleton } from '@/components/property-card-skeleton'
 import { Button } from '@/components/ui/button'
+'use client'
+
 import { Input } from '@/components/ui/input'
 import { Search, Map as MapIcon, List, SlidersHorizontal } from 'lucide-react'
 import { useState, useEffect } from 'react'
