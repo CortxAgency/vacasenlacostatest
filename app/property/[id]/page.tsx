@@ -3,13 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { MapPin, Check, MessageCircle, Share2, Heart, ShieldCheck } from 'lucide-react'
+import { MapPin, Check, MessageCircle, ShieldCheck } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { PropertyActions } from '@/components/property-actions'
 import PropertyMapWrapper from '@/components/property-map-wrapper'
+import Link from 'next/link'
 
-export default async function PropertyDetailPage({
+export async function generateMetadata({
     params,
 }: {
     params: Promise<{ id: string }>
@@ -18,7 +19,9 @@ export default async function PropertyDetailPage({
     const property = await getPropertyById(id)
 
     if (!property) {
-        notFound()
+        return {
+            title: 'Propiedad no encontrada',
+        }
     }
 
     return {
@@ -31,7 +34,8 @@ export default async function PropertyDetailPage({
         },
     }
 }
-export async function generateMetadata({
+
+export default async function PropertyDetailPage({
     params,
 }: {
     params: Promise<{ id: string }>
@@ -192,7 +196,7 @@ export async function generateMetadata({
                     <section>
                         <h2 className="text-2xl font-bold mb-6 text-slate-900">Ubicación</h2>
                         <div className="h-[400px] w-full rounded-3xl overflow-hidden shadow-lg border border-slate-100">
-                            <PropertyMap
+                            <PropertyMapWrapper
                                 properties={[property]}
                                 zoom={15}
                                 center={property.location ? undefined : [-38.0055, -57.5426]} // Default to Mar del Plata if no location
