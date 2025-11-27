@@ -76,12 +76,12 @@ export function Navbar() {
                             Vacas en la Costa
                         </span>
                     ) : (
-                        <div className="relative h-24 w-[500px] hidden sm:block">
+                        <div className="relative h-32 w-[600px] hidden sm:block -ml-4">
                             <Image
-                                src="/logo-text-premium.png"
+                                src="/logo-text-premium.png?v=2"
                                 alt="Vacas en la Costa"
                                 fill
-                                className="object-contain object-left"
+                                className="object-contain object-left scale-125 origin-left"
                             />
                         </div>
                     )}
