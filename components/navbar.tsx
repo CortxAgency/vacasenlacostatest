@@ -62,8 +62,8 @@ export function Navbar() {
                 : "bg-transparent border-transparent py-4"
         )}>
             <div className="container flex items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="relative h-14 w-14 overflow-hidden transition-transform group-hover:scale-105">
+                <Link href="/" className="flex items-center gap-4 group">
+                    <div className="relative h-20 w-20 overflow-hidden transition-transform group-hover:scale-105">
                         <Image
                             src="/realpnglogo.png"
                             alt="Vacas en la Costa Logo"
@@ -76,12 +76,12 @@ export function Navbar() {
                             Vacas en la Costa
                         </span>
                     ) : (
-                        <div className="relative h-32 w-[600px] hidden sm:block -ml-4">
+                        <div className="relative h-40 w-[900px] hidden sm:block -ml-10">
                             <Image
-                                src="/logo-text-premium.png?v=2"
+                                src="/logo-text-premium.png?v=3"
                                 alt="Vacas en la Costa"
                                 fill
-                                className="object-contain object-left scale-125 origin-left"
+                                className="object-contain object-left scale-[3.0] origin-left"
                             />
                         </div>
                     )}
