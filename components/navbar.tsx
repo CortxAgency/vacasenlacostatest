@@ -65,18 +65,26 @@ export function Navbar() {
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="relative h-10 w-10 overflow-hidden rounded-lg group-hover:scale-110 transition-transform">
                         <Image
-                            src="/logo.png"
-                            alt="Vacas en la Costa Logo"
+                            src="/logo-icon.png"
+                            alt="Vacas en la Costa Icon"
                             fill
                             className="object-contain"
                         />
                     </div>
-                    <span className={cn(
-                        "text-xl font-bold tracking-tight transition-colors hidden sm:block",
-                        scrolled ? "text-foreground" : "text-white"
-                    )}>
-                        Vacas en la Costa
-                    </span>
+                    {scrolled ? (
+                        <span className="text-xl font-bold tracking-tight transition-colors text-foreground hidden sm:block">
+                            Vacas en la Costa
+                        </span>
+                    ) : (
+                        <div className="relative h-8 w-40 hidden sm:block">
+                            <Image
+                                src="/logo-text-white.png"
+                                alt="Vacas en la Costa"
+                                fill
+                                className="object-contain object-left"
+                            />
+                        </div>
+                    )}
                 </Link>
 
                 {/* Desktop Menu */}
