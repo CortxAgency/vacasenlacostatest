@@ -129,8 +129,8 @@ function SearchContent() {
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
-                                    {properties.map((property) => (
-                                        <PropertyCard key={property.id} property={property} />
+                                    {properties.map((property, i) => (
+                                        <PropertyCard key={property.id} property={property} index={i} />
                                     ))}
                                 </div>
                             )}

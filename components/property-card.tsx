@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, BedDouble, Bath, Ruler, Heart } from 'lucide-react'
+import { MapPin, BedDouble, Bath, Ruler, Heart, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
@@ -13,10 +13,11 @@ import { LikeButton } from './like-button'
 interface PropertyCardProps {
     property: any
     priority?: boolean
+    index?: number
 }
 
-export function PropertyCard({ property, priority = false }: PropertyCardProps) {
-    const [isLiked, setIsLiked] = useState(false)
+export function PropertyCard({ property, priority = false, index = 0 }: PropertyCardProps) {
+    const [isHovered, setIsHovered] = useState(false)
 
     const formatPrice = (price: number, currency: string) => {
         return new Intl.NumberFormat('es-AR', {
@@ -26,29 +27,39 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
         }).format(price)
     }
 
+    const isNew = property.created_at && new Date(property.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const hasSecondImage = property.property_images?.length > 1
+    const displayImage = isHovered && hasSecondImage ? property.property_images[1].url : (property.property_images?.[0]?.url || '/placeholder.jpg')
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -5 }}
-            transition={{ duration: 0.3 }}
+            whileHover={{ y: -8 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <Link href={`/property/${property.id}`}>
-                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl h-full flex flex-col">
+                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-card rounded-[1.5rem] h-full flex flex-col relative">
                     {/* Image Container */}
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 opacity-60 group-hover:opacity-40 transition-opacity" />
+                    <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 opacity-60 group-hover:opacity-50 transition-opacity duration-500" />
 
-                        <img
-                            src={property.property_images?.[0]?.url || '/placeholder.jpg'}
+                        <motion.img
+                            key={displayImage}
+                            initial={{ scale: 1.1, opacity: 0.8 }}
+                            animate={{ scale: isHovered ? 1.05 : 1, opacity: 1 }}
+                            transition={{ duration: 0.5 }}
+                            src={displayImage}
                             alt={property.title}
-                            className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                            className="object-cover w-full h-full"
                         />
 
                         {/* Badges */}
-                        <div className="absolute top-3 left-3 z-20 flex gap-2">
+                        <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-2">
                             <Badge className={cn(
-                                "font-semibold shadow-sm backdrop-blur-md",
+                                "font-bold shadow-lg backdrop-blur-md border-0 px-3 py-1",
                                 property.operation_type === 'sale' ? "bg-blue-600/90 hover:bg-blue-600" :
                                     property.operation_type === 'rent' ? "bg-emerald-600/90 hover:bg-emerald-600" :
                                         "bg-purple-600/90 hover:bg-purple-600"
@@ -56,30 +67,38 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
                                 {property.operation_type === 'sale' ? 'Venta' :
                                     property.operation_type === 'rent' ? 'Alquiler' : 'Temporal'}
                             </Badge>
+
+                            {isNew && (
+                                <Badge className="bg-amber-500/90 hover:bg-amber-500 text-white border-0 shadow-lg backdrop-blur-md animate-pulse">
+                                    <Sparkles className="w-3 h-3 mr-1" /> Nuevo
+                                </Badge>
+                            )}
+
                             {property.users?.is_verified && (
-                                <Badge variant="secondary" className="bg-white/90 text-black backdrop-blur-md">
+                                <Badge variant="secondary" className="bg-white/90 text-black backdrop-blur-md border-0 shadow-sm">
                                     Verificado
                                 </Badge>
                             )}
                         </div>
 
                         {/* Like Button */}
-                        <div className="absolute top-3 right-3 z-20">
+                        <div className="absolute top-3 right-3 z-30">
                             <LikeButton propertyId={property.id} />
                         </div>
 
                         {/* Price Overlay */}
-                        <div className="absolute bottom-3 left-3 z-20 text-white">
-                            <p className="text-2xl font-bold tracking-tight drop-shadow-md">
+                        <div className="absolute bottom-4 left-4 z-20 text-white">
+                            <p className="text-xs font-medium text-white/80 mb-0.5 uppercase tracking-wider">Precio</p>
+                            <p className="text-2xl font-bold tracking-tight drop-shadow-lg">
                                 {formatPrice(property.price, property.currency)}
                             </p>
                         </div>
                     </div>
 
                     {/* Content */}
-                    <CardContent className="p-5 flex-1 flex flex-col gap-3">
+                    <CardContent className="p-5 flex-1 flex flex-col gap-3 relative">
                         <div className="flex items-start justify-between gap-2">
-                            <h3 className="font-bold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                            <h3 className="font-bold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-300">
                                 {property.title}
                             </h3>
                         </div>
@@ -91,17 +110,17 @@ export function PropertyCard({ property, priority = false }: PropertyCardProps) 
 
                         {/* Features Grid */}
                         <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-border/50">
-                            <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/50 group-hover:bg-primary/5 transition-colors">
-                                <BedDouble className="h-4 w-4 mb-1 text-muted-foreground group-hover:text-primary" />
-                                <span className="text-xs font-medium">3 Amb</span>
+                            <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
+                                <BedDouble className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
+                                <span className="text-xs font-medium text-muted-foreground">3 Amb</span>
                             </div>
-                            <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/50 group-hover:bg-primary/5 transition-colors">
-                                <Bath className="h-4 w-4 mb-1 text-muted-foreground group-hover:text-primary" />
-                                <span className="text-xs font-medium">2 Baños</span>
+                            <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
+                                <Bath className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
+                                <span className="text-xs font-medium text-muted-foreground">2 Baños</span>
                             </div>
-                            <div className="flex flex-col items-center justify-center p-2 rounded-lg bg-muted/50 group-hover:bg-primary/5 transition-colors">
-                                <Ruler className="h-4 w-4 mb-1 text-muted-foreground group-hover:text-primary" />
-                                <span className="text-xs font-medium">85 m²</span>
+                            <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
+                                <Ruler className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
+                                <span className="text-xs font-medium text-muted-foreground">85 m²</span>
                             </div>
                         </div>
                     </CardContent>
