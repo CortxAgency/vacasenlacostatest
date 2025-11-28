@@ -64,7 +64,7 @@ export function Navbar() {
         )}>
             <div className="container max-w-6xl flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="relative h-12 w-12 overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                    <div className="relative h-10 w-10 overflow-hidden transition-transform duration-300 group-hover:scale-110">
                         <Image
                             src="/realpnglogo.png"
                             alt="Vacas en la Costa Logo"
@@ -72,14 +72,12 @@ export function Navbar() {
                             className="object-contain"
                         />
                     </div>
-                    <div className="relative h-10 w-[200px] hidden sm:block transition-opacity duration-300 group-hover:opacity-90">
-                        <Image
-                            src="/logo-text-premium.png"
-                            alt="Vacas en la Costa"
-                            fill
-                            className="object-cover object-left"
-                        />
-                    </div>
+                    <span className={cn(
+                        "hidden sm:block font-bold text-xl tracking-tight transition-colors duration-300",
+                        scrolled ? "text-foreground" : "text-white"
+                    )}>
+                        Vacas en la Costa
+                    </span>
                 </Link>
 
                 {/* Desktop Menu */}
