@@ -12,7 +12,7 @@ export interface Property {
     country: string
     latitude?: number
     longitude?: number
-    location?: any
+    location?: unknown
     owner_id: string
     created_at: string
     updated_at: string
@@ -27,10 +27,16 @@ export interface Property {
         url: string
         is_main: boolean
     }[]
-    users?: {
-        full_name: string
-        avatar_url: string
-        whatsapp?: string
-        is_verified?: boolean
-    }
+    users?: User
+}
+
+export interface User {
+    id?: string
+    email?: string
+    full_name: string
+    avatar_url: string
+    whatsapp?: string
+    is_verified?: boolean
+    role?: string
+    created_at?: string
 }

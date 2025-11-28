@@ -64,10 +64,10 @@ function LoginForm() {
                     router.refresh()
                 }
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             setMessage({
                 type: 'error',
-                text: error.message || 'Ocurrió un error al intentar ingresar.'
+                text: (error as Error).message || 'Ocurrió un error al intentar ingresar.'
             })
         } finally {
             setLoading(false)

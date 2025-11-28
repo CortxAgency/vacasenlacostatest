@@ -12,6 +12,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { getProperties } from '@/actions/get-properties'
 import { useSearchParams } from 'next/navigation'
 
+import { Property } from '@/types/types'
+
 // Dynamically import Map to avoid SSR issues with Leaflet
 const PropertyMap = dynamic(() => import('@/components/property-map'), {
     ssr: false,
@@ -21,7 +23,7 @@ const PropertyMap = dynamic(() => import('@/components/property-map'), {
 function SearchContent() {
     const searchParams = useSearchParams()
     const [showMap, setShowMap] = useState(false)
-    const [properties, setProperties] = useState<any[]>([])
+    const [properties, setProperties] = useState<Property[]>([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -45,7 +47,7 @@ function SearchContent() {
     }, [searchParams])
 
     return (
-        <div className="container py-8 min-h-[calc(100vh-4rem)] flex flex-col">
+        <div className="container py-8 pt-24 min-h-[calc(100vh-4rem)] flex flex-col">
             <div className="flex flex-col md:flex-row gap-6 mb-8 items-end shrink-0 bg-card/50 p-6 rounded-3xl border shadow-sm backdrop-blur-sm">
                 <div className="flex-1 w-full space-y-4">
                     <div>

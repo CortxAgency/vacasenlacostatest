@@ -2,8 +2,7 @@ import { getPublicProfile } from '@/actions/get-public-profile'
 import { PropertyCard } from '@/components/property-card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { CheckCircle2, MapPin, Calendar } from 'lucide-react'
+import { CheckCircle2, Calendar } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {

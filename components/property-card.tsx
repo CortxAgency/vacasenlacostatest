@@ -1,23 +1,31 @@
 'use client'
 
 import Link from 'next/link'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, BedDouble, Bath, Ruler, Heart, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { MapPin, BedDouble, Bath, Ruler, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { Property } from '@/types/types'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { LikeButton } from './like-button'
 
 interface PropertyCardProps {
-    property: any
+    property: Property
     priority?: boolean
     index?: number
 }
 
-export function PropertyCard({ property, priority = false, index = 0 }: PropertyCardProps) {
+export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
     const [isHovered, setIsHovered] = useState(false)
+    const [isNew, setIsNew] = useState(false)
+
+    useEffect(() => {
+        if (property.created_at) {
+            // eslint-disable-next-line
+            setIsNew(new Date(property.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+        }
+    }, [property.created_at])
 
     const formatPrice = (price: number, currency: string) => {
         return new Intl.NumberFormat('es-AR', {
@@ -26,8 +34,6 @@ export function PropertyCard({ property, priority = false, index = 0 }: Property
             maximumFractionDigits: 0,
         }).format(price)
     }
-
-    const isNew = property.created_at && new Date(property.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
     const hasSecondImage = property.property_images?.length > 1
     const displayImage = isHovered && hasSecondImage ? property.property_images[1].url : (property.property_images?.[0]?.url || '/placeholder.jpg')
 

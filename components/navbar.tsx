@@ -15,7 +15,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { LogOut, User as UserIcon, LayoutDashboard, PlusCircle, Menu, Heart } from 'lucide-react'
+import { LogOut, User as UserIcon, PlusCircle, Menu, Heart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
@@ -47,6 +47,7 @@ export function Navbar() {
             subscription.unsubscribe()
             window.removeEventListener('scroll', handleScroll)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleSignOut = async () => {
@@ -61,9 +62,9 @@ export function Navbar() {
                 ? "bg-background/80 backdrop-blur-xl border-border/50 shadow-sm py-2"
                 : "bg-transparent border-transparent py-4"
         )}>
-            <div className="container flex items-center justify-between px-4">
+            <div className="container max-w-6xl flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="relative h-16 w-16 overflow-hidden transition-transform duration-300 group-hover:scale-110">
+                    <div className="relative h-12 w-12 overflow-hidden transition-transform duration-300 group-hover:scale-110">
                         <Image
                             src="/realpnglogo.png"
                             alt="Vacas en la Costa Logo"
@@ -71,9 +72,9 @@ export function Navbar() {
                             className="object-contain"
                         />
                     </div>
-                    <div className="relative h-12 w-[280px] hidden sm:block transition-opacity duration-300 group-hover:opacity-90">
+                    <div className="relative h-10 w-[200px] hidden sm:block transition-opacity duration-300 group-hover:opacity-90">
                         <Image
-                            src="/logo-text-premium.png?v=6"
+                            src="/logo-text-premium.png"
                             alt="Vacas en la Costa"
                             fill
                             className="object-cover object-left"

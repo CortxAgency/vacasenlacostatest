@@ -25,10 +25,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Upload, X } from 'lucide-react'
 import { getPresignedUrl } from '@/actions/upload'
-import { createProperty } from '@/actions/property' // We might need an update action
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
+import { Property } from '@/types/types'
+import Image from 'next/image'
 
 const formSchema = z.object({
     title: z.string().min(5, 'El título debe tener al menos 5 caracteres'),
@@ -41,9 +42,9 @@ const formSchema = z.object({
     bathrooms: z.coerce.number().min(1, 'Mínimo 1 baño'),
 })
 
-export default function EditPropertyForm({ property }: { property: any }) {
+export default function EditPropertyForm({ property }: { property: Property }) {
     const [images, setImages] = useState<File[]>([])
-    const [existingImages, setExistingImages] = useState<any[]>(property.property_images || [])
+    const [existingImages, setExistingImages] = useState<Property['property_images']>(property.property_images || [])
     const [uploading, setUploading] = useState(false)
     const router = useRouter()
     const supabase = createClient()
@@ -54,8 +55,8 @@ export default function EditPropertyForm({ property }: { property: any }) {
             title: property.title,
             description: property.description,
             price: property.price,
-            currency: property.currency,
-            operation_type: property.operation_type,
+            currency: property.currency as "USD" | "ARS",
+            operation_type: property.operation_type as "rent" | "sale" | "temporary",
             address: property.address,
             rooms: property.rooms || 1,
             bathrooms: property.bathrooms || 1,
@@ -277,15 +278,16 @@ export default function EditPropertyForm({ property }: { property: any }) {
                             <div className="grid grid-cols-3 gap-4 mb-4">
                                 {existingImages.map((img) => (
                                     <div key={img.id} className="relative aspect-square bg-muted rounded-md overflow-hidden">
-                                        <img
+                                        <Image
                                             src={img.url}
                                             alt="Existing"
-                                            className="object-cover w-full h-full"
+                                            fill
+                                            className="object-cover"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => removeExistingImage(img.id)}
-                                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
+                                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 z-10"
                                         >
                                             <X className="h-4 w-4" />
                                         </button>
@@ -297,15 +299,17 @@ export default function EditPropertyForm({ property }: { property: any }) {
                             <div className="grid grid-cols-3 gap-4 mb-4">
                                 {images.map((file, i) => (
                                     <div key={i} className="relative aspect-square bg-muted rounded-md overflow-hidden">
-                                        <img
+                                        <Image
                                             src={URL.createObjectURL(file)}
                                             alt="Preview"
-                                            className="object-cover w-full h-full"
+                                            fill
+                                            className="object-cover"
+                                            unoptimized
                                         />
                                         <button
                                             type="button"
                                             onClick={() => removeNewImage(i)}
-                                            className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
+                                            className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/70 z-10"
                                         >
                                             <X className="h-4 w-4" />
                                         </button>

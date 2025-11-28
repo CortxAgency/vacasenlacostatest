@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea' // Need to add this componen
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -46,7 +45,6 @@ const formSchema = z.object({
 export default function PublishPage() {
     const [images, setImages] = useState<File[]>([])
     const [uploading, setUploading] = useState(false)
-    const [imageUrls, setImageUrls] = useState<string[]>([])
     const router = useRouter()
 
     const form = useForm({
@@ -268,15 +266,17 @@ export default function PublishPage() {
                                 <div className="grid grid-cols-3 gap-4 mb-4">
                                     {images.map((file, i) => (
                                         <div key={i} className="relative aspect-square bg-muted rounded-md overflow-hidden">
-                                            <img
+                                            <Image
                                                 src={URL.createObjectURL(file)}
                                                 alt="Preview"
-                                                className="object-cover w-full h-full"
+                                                fill
+                                                className="object-cover"
+                                                unoptimized
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => removeImage(i)}
-                                                className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
+                                                className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/70 z-10"
                                             >
                                                 <X className="h-4 w-4" />
                                             </button>

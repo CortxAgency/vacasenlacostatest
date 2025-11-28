@@ -3,7 +3,8 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import { useEffect } from 'react'
+import Image from 'next/image'
+import { Property } from '@/types/types'
 
 // Fix for Leaflet default icon not loading in Next.js
 const icon = L.icon({
@@ -17,7 +18,7 @@ const icon = L.icon({
 })
 
 interface PropertyMapProps {
-    properties: any[]
+    properties: Property[]
     center?: [number, number]
     zoom?: number
 }
@@ -49,8 +50,9 @@ export default function PropertyMap({ properties, center = [-34.6037, -58.3816],
                     }
                 } else if (property.location && typeof property.location === 'object') {
                     // If supabase returns it as object
-                    lat = property.location.x
-                    lng = property.location.y
+                    const loc = property.location as { x: number, y: number }
+                    lat = loc.x
+                    lng = loc.y
                 }
 
                 if (lat === 0 && lng === 0) return null // Skip invalid/default locations
@@ -59,11 +61,14 @@ export default function PropertyMap({ properties, center = [-34.6037, -58.3816],
                     <Marker key={property.id} position={[lat, lng]} icon={icon}>
                         <Popup>
                             <div className="min-w-[200px]">
-                                <img
-                                    src={property.property_images?.[0]?.url || '/placeholder.jpg'}
-                                    alt={property.title}
-                                    className="w-full h-32 object-cover rounded-md mb-2"
-                                />
+                                <div className="relative w-full h-32 mb-2">
+                                    <Image
+                                        src={property.property_images?.[0]?.url || '/placeholder.jpg'}
+                                        alt={property.title}
+                                        fill
+                                        className="object-cover rounded-md"
+                                    />
+                                </div>
                                 <h3 className="font-bold text-sm">{property.title}</h3>
                                 <p className="text-xs text-muted-foreground">{property.address}</p>
                                 <p className="font-bold mt-1">

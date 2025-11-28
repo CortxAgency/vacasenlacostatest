@@ -7,12 +7,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
 import { Loader2, ShieldCheck, User as UserIcon, Phone, Sparkles } from 'lucide-react'
 import { getProfile, updateProfile } from '@/actions/profile'
 import { useFormState, useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
+import { User } from '@/types/types'
 
 function SubmitButton() {
     const { pending } = useFormStatus()
@@ -29,7 +29,7 @@ const initialState = {
 }
 
 export default function ProfilePage() {
-    const [profile, setProfile] = useState<any>(null)
+    const [profile, setProfile] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const [state, formAction] = useFormState(updateProfile, initialState)
 

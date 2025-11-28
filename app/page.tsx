@@ -3,20 +3,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Search, Home, Key, Calendar, ArrowRight, ShieldCheck, Zap, Star } from 'lucide-react'
+import { Search, Home, Key, ArrowRight, ShieldCheck, Zap, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 
 export default function HomePage() {
   const [textIndex, setTextIndex] = useState(0)
-  const texts = ["la playa", "el bosque", "la costa"]
+  const texts = ["tus vacaciones soñadas", "la costa atlántica", "tu destino ideal"]
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTextIndex((prev) => (prev + 1) % texts.length)
     }, 3000)
     return () => clearInterval(interval)
-  }, [])
+  }, [texts.length])
 
   const container = {
     hidden: { opacity: 0 },
@@ -39,11 +39,14 @@ export default function HomePage() {
       <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Parallax feel */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/50 to-background z-10" />
-          <img
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 z-10" />
+          <Image
             src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80"
             alt="Costa Argentina"
-            className="w-full h-full object-cover animate-slow-zoom"
+            fill
+            className="object-cover animate-slow-zoom"
+            priority
+            unoptimized
           />
         </div>
 
@@ -53,14 +56,14 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default mx-auto">
               <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 animate-pulse" />
               <span className="text-sm font-medium tracking-wide">La plataforma #1 de Vacas en la Costa</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white drop-shadow-xl min-h-[160px] md:min-h-0 flex flex-col md:block items-center">
               <span>Tu lugar en </span>
-              <span className="relative inline-flex justify-start min-w-[220px] md:min-w-[300px] h-[1.2em] overflow-hidden align-bottom">
+              <span className="relative inline-flex justify-start min-w-[220px] md:min-w-[300px] h-[1.2em] overflow-hidden align-baseline">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={textIndex}
@@ -93,7 +96,7 @@ export default function HomePage() {
             >
               <motion.div variants={item} className="w-full sm:w-auto">
                 <Link href="/search?op=rent">
-                  <Button size="lg" className="relative overflow-hidden w-full sm:w-auto text-lg px-10 h-16 rounded-full bg-white text-slate-900 hover:bg-slate-50 hover:scale-105 transition-all shadow-xl shadow-black/20 font-semibold group">
+                  <Button size="lg" className="relative overflow-hidden w-full sm:w-auto text-lg px-10 h-16 rounded-full bg-white text-slate-900 hover:bg-slate-100 hover:scale-105 transition-all shadow-2xl shadow-black/20 font-semibold group">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
                     <Key className="mr-2 h-5 w-5 text-blue-600 group-hover:rotate-12 transition-transform" />
                     Buscar Alquiler
@@ -103,7 +106,7 @@ export default function HomePage() {
 
               <motion.div variants={item} className="w-full sm:w-auto">
                 <Link href="/search?op=sale">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-10 h-16 rounded-full border-2 border-white/50 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 hover:border-white hover:scale-105 transition-all font-semibold group">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-10 h-16 rounded-full border-2 border-white/30 bg-black/30 backdrop-blur-md text-white hover:bg-black/50 hover:border-white hover:scale-105 transition-all font-semibold group">
                     <Home className="mr-2 h-5 w-5 group-hover:-translate-y-1 transition-transform" />
                     Comprar Propiedad
                   </Button>
@@ -115,7 +118,7 @@ export default function HomePage() {
 
         {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 text-white/80 cursor-pointer"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 cursor-pointer"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}

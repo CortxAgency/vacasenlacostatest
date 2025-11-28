@@ -2,7 +2,7 @@
 
 import { PropertyCard } from '@/components/property-card'
 import { Button } from '@/components/ui/button'
-import { Trash2, Edit, Pencil, Loader2 } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 import { deleteProperty } from '@/actions/property'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -20,8 +20,9 @@ import {
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { FeatureButton } from '@/components/feature-button'
+import { Property } from '@/types/types'
 
-export function DashboardPropertyItem({ property }: { property: any }) {
+export function DashboardPropertyItem({ property }: { property: Property }) {
     const router = useRouter()
     const [deleting, setDeleting] = useState(false)
 
