@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react'
 
 export default function HomePage() {
   const [textIndex, setTextIndex] = useState(0)
-  const texts = ["tus vacaciones soñadas", "la costa atlántica", "tu destino ideal"]
+  const texts = ["tus vacaciones", "la costa atlántica", "tu destino ideal"]
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,7 +56,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default mx-auto">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default mx-auto mt-20">
               <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 animate-pulse" />
               <span className="text-sm font-medium tracking-wide">La plataforma #1 de Vacas en la Costa</span>
             </div>

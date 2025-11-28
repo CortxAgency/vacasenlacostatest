@@ -16,7 +16,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LogOut, User as UserIcon, PlusCircle, Menu, Heart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { ModeToggle } from '@/components/mode-toggle'
@@ -25,7 +25,9 @@ export function Navbar() {
     const [user, setUser] = useState<User | null>(null)
     const [scrolled, setScrolled] = useState(false)
     const router = useRouter()
+    const pathname = usePathname()
     const supabase = createClient()
+    const isHome = pathname === '/'
 
     useEffect(() => {
         const getUser = async () => {
@@ -58,35 +60,27 @@ export function Navbar() {
     return (
         <nav className={cn(
             "fixed top-0 w-full z-[100] transition-all duration-300 border-b",
-            scrolled
+            scrolled || !isHome
                 ? "bg-background/80 backdrop-blur-xl border-border/50 shadow-sm py-2"
                 : "bg-transparent border-transparent py-4"
         )}>
             <div className="container max-w-6xl flex items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="relative h-10 w-10 overflow-hidden transition-transform duration-300 group-hover:scale-110">
-                        <Image
-                            src="/realpnglogo.png"
-                            alt="Vacas en la Costa Logo"
-                            fill
-                            className="object-contain"
-                        />
-                    </div>
+                <Link href="/" className="flex items-center gap-2 group">
                     <span className={cn(
-                        "hidden sm:block font-bold text-xl tracking-tight transition-colors duration-300",
-                        scrolled ? "text-foreground" : "text-white"
+                        "font-bold text-2xl tracking-tighter transition-colors duration-300",
+                        scrolled || !isHome ? "text-foreground" : "text-white"
                     )}>
                         Vacas en la Costa
                     </span>
                 </Link>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-6">
+                <div className="hidden md:flex items-center gap-6 mr-8">
                     <Link
                         href="/search"
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            scrolled ? "text-muted-foreground" : "text-white/80 hover:text-white"
+                            scrolled || !isHome ? "text-muted-foreground" : "text-white/80 hover:text-white"
                         )}
                     >
                         Explorar
@@ -97,10 +91,10 @@ export function Navbar() {
                             <ModeToggle />
                             <Link href="/publish">
                                 <Button
-                                    variant={scrolled ? "default" : "secondary"}
+                                    variant={scrolled || !isHome ? "default" : "secondary"}
                                     className={cn(
                                         "rounded-full shadow-sm",
-                                        !scrolled && "bg-white/10 text-white hover:bg-white/20 border-0"
+                                        (!scrolled && isHome) && "bg-white/10 text-white hover:bg-white/20 border-0"
                                     )}
                                 >
                                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -145,7 +139,7 @@ export function Navbar() {
                             <ModeToggle />
                             <Link href="/login">
                                 <Button variant="ghost" className={cn(
-                                    scrolled ? "text-foreground" : "text-white hover:bg-white/10 hover:text-white"
+                                    scrolled || !isHome ? "text-foreground" : "text-white hover:bg-white/10 hover:text-white"
                                 )}>
                                     Ingresar
                                 </Button>
@@ -153,7 +147,7 @@ export function Navbar() {
                             <Link href="/login?view=sign_up">
                                 <Button className={cn(
                                     "rounded-full px-6",
-                                    !scrolled && "bg-white text-slate-900 hover:bg-slate-100"
+                                    (!scrolled && isHome) && "bg-white text-slate-900 hover:bg-slate-100"
                                 )}>
                                     Crear Cuenta
                                 </Button>
