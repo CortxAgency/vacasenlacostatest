@@ -36,7 +36,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
         {/* Background Image with Parallax feel */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 z-10" />
@@ -56,7 +56,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default mx-auto mt-20">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8 shadow-lg hover:bg-white/20 transition-colors cursor-default mx-auto mt-10 md:mt-0">
               <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 animate-pulse" />
               <span className="text-sm font-medium tracking-wide">La plataforma #1 de Vacas en la Costa</span>
             </div>
@@ -115,19 +115,6 @@ export default function HomePage() {
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 cursor-pointer"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-        >
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-shadow-sm">Explorar</span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
-          </div>
-        </motion.div>
       </section>
 
       {/* Value Props Section */}
