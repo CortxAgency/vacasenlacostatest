@@ -17,7 +17,7 @@ export default async function FavoritesPage() {
     const favorites = await getFavorites()
 
     return (
-        <div className="container py-10 min-h-[calc(100vh-4rem)]">
+        <div className="container pt-24 pb-10 min-h-[calc(100vh-4rem)]">
             <div className="flex items-center gap-4 mb-8">
                 <Button variant="ghost" size="icon" asChild className="rounded-full">
                     <Link href="/dashboard">

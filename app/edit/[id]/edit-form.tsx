@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -25,11 +25,20 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2, Upload, X } from 'lucide-react'
 import { getPresignedUrl } from '@/actions/upload'
+import { getR2PublicUrl } from '@/utils/image-url'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { toast } from 'sonner'
 import { Property } from '@/types/types'
 import Image from 'next/image'
+
+import dynamic from 'next/dynamic'
+
+// Dynamically import LocationPicker
+const LocationPicker = dynamic(() => import('@/components/location-picker'), {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse flex items-center justify-center">Cargando mapa...</div>
+})
 
 const formSchema = z.object({
     title: z.string().min(5, 'El título debe tener al menos 5 caracteres'),
@@ -46,6 +55,22 @@ export default function EditPropertyForm({ property }: { property: Property }) {
     const [images, setImages] = useState<File[]>([])
     const [existingImages, setExistingImages] = useState<Property['property_images']>(property.property_images || [])
     const [uploading, setUploading] = useState(false)
+
+    // Parse initial location
+    const initialLocation = useMemo(() => {
+        if (!property.location) return undefined
+        if (typeof property.location === 'string') {
+            const parts = property.location.replace(/[()]/g, '').split(',')
+            if (parts.length === 2) return { lat: parseFloat(parts[0]), lng: parseFloat(parts[1]) }
+        }
+        // If it comes as object {x, y}
+        const loc = property.location as any
+        if (loc.x && loc.y) return { lat: loc.x, lng: loc.y }
+        return undefined
+    }, [property.location])
+
+    const [location, setLocation] = useState<{ lat: number; lng: number } | undefined>(initialLocation)
+
     const router = useRouter()
     const supabase = createClient()
 
@@ -96,7 +121,7 @@ export default function EditPropertyForm({ property }: { property: Property }) {
                     headers: { 'Content-Type': file.type },
                 })
 
-                const publicUrl = `https://media.argprop.com/${key}`
+                const publicUrl = getR2PublicUrl(key)
                 uploadedUrls.push(publicUrl)
             }
 
@@ -105,6 +130,7 @@ export default function EditPropertyForm({ property }: { property: Property }) {
                 .from('properties')
                 .update({
                     ...values,
+                    location: location ? `(${location.lat},${location.lng})` : undefined
                     // features: { wifi: true }, // Keep existing or update
                 })
                 .eq('id', property.id)
@@ -245,19 +271,29 @@ export default function EditPropertyForm({ property }: { property: Property }) {
                             />
                         </div>
 
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dirección</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="address"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Dirección</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <div className="space-y-2">
+                                <FormLabel>Ubicación en Mapa</FormLabel>
+                                <LocationPicker value={location} onChange={setLocation} />
+                                <p className="text-xs text-muted-foreground">
+                                    Arrastra el marcador para ajustar la ubicación.
+                                </p>
+                            </div>
+                        </div>
 
                         <FormField
                             control={form.control}
@@ -286,7 +322,7 @@ export default function EditPropertyForm({ property }: { property: Property }) {
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => removeExistingImage(img.id)}
+                                            onClick={() => img.id && removeExistingImage(img.id)}
                                             className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 z-10"
                                         >
                                             <X className="h-4 w-4" />

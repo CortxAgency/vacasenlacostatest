@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { MapPin, Check, MessageCircle, ShieldCheck } from 'lucide-react'
+import { MapPin, Check, MessageCircle, ShieldCheck, Mail } from 'lucide-react'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { PropertyActions } from '@/components/property-actions'
 import PropertyMapWrapper from '@/components/property-map-wrapper'
 import Link from 'next/link'
+import { parseLocation } from '@/utils/location'
 
 export async function generateMetadata({
     params,
@@ -47,22 +48,54 @@ export default async function PropertyDetailPage({
         notFound()
     }
 
-    const whatsappLink = property.users?.whatsapp
-        ? `https://wa.me/${property.users.whatsapp}?text=Hola, vi tu propiedad "${property.title}" en ArgProp y me interesa.`
-        : '#'
+    // Determinar contacto (personalizado de la publicación o del perfil)
+    const contactWhatsapp = property.contact_whatsapp || property.users?.whatsapp
+    const contactEmail = property.contact_email || property.users?.email
+
+    // Plantilla mejorada de WhatsApp
+    const whatsappMessage = `Hola! Vi tu propiedad "${property.title}" en Vacas en la Costa y me interesa.
+
+📍 Ubicación: ${property.address}
+💰 Precio: ${property.currency} ${property.price.toLocaleString()}
+
+¿Está disponible?`
+
+    const whatsappLink = contactWhatsapp
+        ? `https://wa.me/549${contactWhatsapp}?text=${encodeURIComponent(whatsappMessage)}`
+        : null
+
+    // Link de email con plantilla
+    const emailSubject = `Consulta sobre: ${property.title}`
+    const emailBody = `Hola,
+
+Vi tu propiedad "${property.title}" en Vacas en la Costa y me interesa.
+
+Ubicación: ${property.address}
+Precio: ${property.currency} ${property.price.toLocaleString()}
+
+¿Está disponible?
+
+Saludos,`
+
+    const emailLink = contactEmail
+        ? `mailto:${contactEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+        : null
+
+    // Parsear ubicación para el mapa
+    const locationCoords = parseLocation(property.location)
 
     return (
-        <div className="container py-10 animate-in fade-in duration-500">
+        <div className="container pt-20 pb-10 animate-in fade-in duration-500 max-w-6xl">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between gap-6 mb-8">
+            <div className="flex flex-col md:flex-row justify-between gap-6 mb-6">
                 <div className="space-y-2">
                     <Badge variant="secondary" className="mb-2 backdrop-blur-md bg-primary/10 text-primary border-primary/20">
                         {property.operation_type === 'rent' ? 'Alquiler' :
                             property.operation_type === 'sale' ? 'Venta' : 'Temporal'}
                     </Badge>
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">{property.title}</h1>
-                    <div className="flex items-center text-muted-foreground text-lg">
-                        <MapPin className="h-5 w-5 mr-2 text-primary" />
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900">{property.title}</h1>
+                    <div className="flex items-center text-muted-foreground text-base">
+                        <MapPin className="h-4 w-4 mr-2 text-primary" />
                         <span>{property.address}</span>
                         {property.rooms && (
                             <>
@@ -79,19 +112,19 @@ export default async function PropertyDetailPage({
                     </div>
                 </div>
                 <div className="flex flex-col items-end justify-center">
-                    <div className="text-4xl md:text-5xl font-bold text-primary tracking-tight">
+                    <div className="text-3xl md:text-4xl font-bold text-primary tracking-tight">
                         {new Intl.NumberFormat('es-AR', {
                             style: 'currency',
                             currency: property.currency,
                             maximumFractionDigits: 0,
                         }).format(property.price)}
                     </div>
-                    <p className="text-muted-foreground text-sm mt-1">Precio final, sin comisiones extra</p>
+                    <p className="text-muted-foreground text-xs mt-1">Precio final, sin comisiones extra</p>
                 </div>
             </div>
 
             {/* Gallery Grid (Premium Layout) */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 h-[500px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-10 h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-xl">
                 <div className="md:col-span-2 md:row-span-2 relative bg-muted group cursor-pointer">
                     {property.property_images[0] && (
                         <Image
@@ -199,7 +232,7 @@ export default async function PropertyDetailPage({
                             <PropertyMapWrapper
                                 properties={[property]}
                                 zoom={15}
-                                center={property.location ? undefined : [-38.0055, -57.5426]} // Default to Mar del Plata if no location
+                                center={locationCoords ? [locationCoords.lat, locationCoords.lng] : [-38.0055, -57.5426]}
                             />
                         </div>
                     </section>
@@ -219,22 +252,37 @@ export default async function PropertyDetailPage({
                                     </Avatar>
                                     <div>
                                         <p className="font-bold text-lg text-slate-900 group-hover:text-primary transition-colors">{property.users?.full_name || 'Anfitrión'}</p>
-                                        <div className="flex items-center gap-1 text-emerald-600 text-sm font-medium">
+                                        <div className="flex items-center gap-1 text-sm font-medium">
                                             <ShieldCheck className="h-4 w-4" />
-                                            {property.users?.is_verified ? 'Identidad Verificada' : 'Usuario Verificado'}
+                                            {property.users?.is_identity_verified ? (
+                                                <span className="text-emerald-600">🛡️ Identidad Verificada</span>
+                                            ) : property.users?.is_verified ? (
+                                                <span className="text-blue-600">✓ Cuenta Verificada</span>
+                                            ) : (
+                                                <span className="text-gray-500">Nuevo Usuario</span>
+                                            )}
                                         </div>
                                     </div>
                                 </Link>
 
-                                <div className="grid gap-4">
-                                    {property.users?.whatsapp ? (
+                                <div className="grid gap-3">
+                                    {whatsappLink && (
                                         <Button className="w-full h-14 text-lg bg-[#25D366] hover:bg-[#128C7E] shadow-lg shadow-green-500/20 rounded-xl transition-all hover:scale-105" asChild>
                                             <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                                                 <MessageCircle className="mr-2 h-6 w-6" />
                                                 Contactar por WhatsApp
                                             </a>
                                         </Button>
-                                    ) : (
+                                    )}
+                                    {emailLink && (
+                                        <Button variant="outline" className="w-full h-14 text-lg rounded-xl" asChild>
+                                            <a href={emailLink}>
+                                                <Mail className="mr-2 h-6 w-6" />
+                                                Enviar Email
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {!whatsappLink && !emailLink && (
                                         <Button className="w-full h-14 text-lg rounded-xl" disabled>
                                             Sin contacto disponible
                                         </Button>

@@ -6,8 +6,10 @@ import { z } from 'zod'
 
 const profileSchema = z.object({
     full_name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-    whatsapp: z.string().min(8, "El número debe ser válido"),
-    // bio: z.string().optional(), // Add bio column to DB if we want it later
+    whatsapp: z.string()
+        .min(10, "El número es muy corto (mínimo 10 dígitos)")
+        .max(13, "El número es muy largo")
+        .regex(/^(?:11|2[2-9]|3[0-9]|4[0-9]|5[0-9])[0-9]{8}$/, "Formato inválido. Usá código de área sin 0 (ej: 11) y número sin 15."),
 })
 
 export async function getProfile() {
@@ -40,7 +42,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
 
     const rawData = {
         full_name: formData.get('full_name') as string,
-        whatsapp: formData.get('whatsapp') as string,
+        whatsapp: (formData.get('whatsapp') as string).replace(/[\s-]/g, ''),
     }
 
     const validatedFields = profileSchema.safeParse(rawData)
@@ -57,7 +59,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
         .update({
             full_name: validatedFields.data.full_name,
             whatsapp: validatedFields.data.whatsapp,
-            // If we add bio later: bio: validatedFields.data.bio
         })
         .eq('id', user.id)
 
@@ -67,6 +68,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/profile')
-    revalidatePath('/dashboard') // Update dashboard as well if name is shown there
+    revalidatePath('/dashboard')
     return { message: 'Perfil actualizado correctamente', type: 'success' }
 }

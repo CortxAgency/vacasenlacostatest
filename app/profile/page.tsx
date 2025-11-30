@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useActionState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
 import { Loader2, ShieldCheck, User as UserIcon, Phone, Sparkles } from 'lucide-react'
 import { getProfile, updateProfile } from '@/actions/profile'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { User } from '@/types/types'
@@ -31,7 +31,7 @@ const initialState = {
 export default function ProfilePage() {
     const [profile, setProfile] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
-    const [state, formAction] = useFormState(updateProfile, initialState)
+    const [state, formAction] = useActionState(updateProfile, initialState)
 
     useEffect(() => {
         getProfile().then(data => {
@@ -50,7 +50,7 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="container py-10 flex justify-center">
+            <div className="container pt-24 pb-10 flex justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
         )
@@ -63,7 +63,7 @@ export default function ProfilePage() {
     const completionPercentage = [hasName, hasWhatsapp, hasAvatar].filter(Boolean).length / 3 * 100
 
     return (
-        <div className="container max-w-4xl py-10 min-h-[calc(100vh-4rem)]">
+        <div className="container max-w-4xl pt-24 pb-10 min-h-[calc(100vh-4rem)]">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

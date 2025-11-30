@@ -27,7 +27,7 @@ export default async function DashboardPage() {
         .order('created_at', { ascending: false })
 
     return (
-        <div className="container py-8">
+        <div className="container pt-24 pb-8">
             <PaymentStatusHandler />
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Mis Publicaciones</h1>

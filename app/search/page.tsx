@@ -10,7 +10,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { SearchFilters } from '@/components/search-filters'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { getProperties } from '@/actions/get-properties'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 import { Property } from '@/types/types'
 
@@ -26,6 +26,19 @@ function SearchContent() {
     const [properties, setProperties] = useState<Property[]>([])
     const [loading, setLoading] = useState(true)
 
+    const router = useRouter()
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('query') || '')
+
+    const handleSearch = () => {
+        const params = new URLSearchParams(searchParams.toString())
+        if (searchTerm) {
+            params.set('query', searchTerm)
+        } else {
+            params.delete('query')
+        }
+        router.push(`/search?${params.toString()}`)
+    }
+
     useEffect(() => {
         const fetchProps = async () => {
             setLoading(true)
@@ -33,12 +46,14 @@ function SearchContent() {
             const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined
             const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined
             const rooms = searchParams.get('rooms') ? parseInt(searchParams.get('rooms')!) : undefined
+            const query = searchParams.get('query') || undefined
 
             const data = await getProperties({
                 operation_type: operation,
                 minPrice,
                 maxPrice,
-                rooms
+                rooms,
+                query
             })
             setProperties(data || [])
             setLoading(false)
@@ -60,9 +75,15 @@ function SearchContent() {
                             <Input
                                 placeholder="Buscar por ciudad, zona o barrio..."
                                 className="pl-10 h-12 rounded-xl border-slate-200 bg-white focus-visible:ring-primary/20"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                             />
                         </div>
-                        <Button className="h-12 px-8 rounded-xl font-semibold shadow-lg shadow-primary/20">
+                        <Button
+                            className="h-12 px-8 rounded-xl font-semibold shadow-lg shadow-primary/20"
+                            onClick={handleSearch}
+                        >
                             Buscar
                         </Button>
 

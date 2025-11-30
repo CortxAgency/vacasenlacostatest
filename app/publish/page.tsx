@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { getR2PublicUrl } from '@/utils/image-url'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea' // Need to add this component
@@ -30,6 +31,14 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
+import dynamic from 'next/dynamic'
+
+// Dynamically import LocationPicker to avoid SSR issues
+const LocationPicker = dynamic(() => import('@/components/location-picker'), {
+    ssr: false,
+    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse flex items-center justify-center">Cargando mapa...</div>
+})
+
 const formSchema = z.object({
     title: z.string().min(5, 'El título debe tener al menos 5 caracteres'),
     description: z.string().min(20, 'La descripción debe tener al menos 20 caracteres'),
@@ -39,12 +48,15 @@ const formSchema = z.object({
     address: z.string().min(5, 'La dirección es requerida'),
     rooms: z.coerce.number().min(1, 'Mínimo 1 ambiente'),
     bathrooms: z.coerce.number().min(1, 'Mínimo 1 baño'),
+    contact_whatsapp: z.string().optional(),
+    contact_email: z.string().email('Email inválido').optional().or(z.literal('')),
     // features: z.record(z.boolean()), // Simplified for MVP
 })
 
 export default function PublishPage() {
     const [images, setImages] = useState<File[]>([])
     const [uploading, setUploading] = useState(false)
+    const [location, setLocation] = useState<{ lat: number; lng: number } | undefined>(undefined)
     const router = useRouter()
 
     const form = useForm({
@@ -58,6 +70,8 @@ export default function PublishPage() {
             address: '',
             rooms: 1,
             bathrooms: 1,
+            contact_whatsapp: '',
+            contact_email: '',
         },
     })
 
@@ -90,15 +104,7 @@ export default function PublishPage() {
                     headers: { 'Content-Type': file.type },
                 })
 
-                // Construct public URL (Assuming public bucket access or worker)
-                // For now, we store the key or a constructed URL if we have a custom domain
-                // If R2 bucket is public read:
-                // https://<account-id>.r2.cloudflarestorage.com/<bucket>/<key> (Not for public access usually)
-                // Better: https://pub-<hash>.r2.dev/<key> (R2.dev subdomain) or Custom Domain
-                // Let's assume we have a public domain or use the R2.dev for MVP
-                // User didn't provide public domain, so we might need to ask or use a placeholder.
-                // I will use a placeholder domain for now.
-                const publicUrl = `https://media.argprop.com/${key}`
+                const publicUrl = getR2PublicUrl(key)
                 uploadedUrls.push(publicUrl)
             }
 
@@ -107,6 +113,7 @@ export default function PublishPage() {
                 ...values,
                 features: { wifi: true }, // Hardcoded for MVP
                 images: uploadedUrls,
+                location: location ? `(${location.lat},${location.lng})` : undefined
             })
 
             router.push('/dashboard')
@@ -233,19 +240,62 @@ export default function PublishPage() {
                                 />
                             </div>
 
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Dirección</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Av. Libertador 1234" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="address"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Dirección</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Av. Libertador 1234" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <div className="space-y-2">
+                                    <FormLabel>Ubicación en Mapa (Opcional)</FormLabel>
+                                    <LocationPicker value={location} onChange={setLocation} />
+                                    <p className="text-xs text-muted-foreground">
+                                        Arrastra el marcador para indicar la ubicación exacta.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                                <div className="col-span-2">
+                                    <h3 className="font-medium mb-2">Contacto para esta publicación (Opcional)</h3>
+                                    <p className="text-sm text-muted-foreground mb-4">Si los dejas vacíos, se usarán los datos de tu perfil.</p>
+                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="contact_whatsapp"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>WhatsApp Alternativo</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="11 1234 5678" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="contact_email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email Alternativo</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="contacto@ejemplo.com" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
                             <FormField
                                 control={form.control}

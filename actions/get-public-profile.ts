@@ -8,7 +8,7 @@ export async function getPublicProfile(userId: string) {
     // Get User Info
     const { data: user, error: userError } = await supabase
         .from('users')
-        .select('id, full_name, avatar_url, is_verified, role, created_at')
+        .select('id, full_name, avatar_url, is_verified, is_identity_verified, role, created_at')
         .eq('id', userId)
         .single()
 

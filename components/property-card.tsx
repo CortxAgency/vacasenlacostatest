@@ -118,16 +118,18 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                         <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-border/50">
                             <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
                                 <BedDouble className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
-                                <span className="text-xs font-medium text-muted-foreground">3 Amb</span>
+                                <span className="text-xs font-medium text-muted-foreground">{property.rooms || 1} Amb</span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
                                 <Bath className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
-                                <span className="text-xs font-medium text-muted-foreground">2 Baños</span>
+                                <span className="text-xs font-medium text-muted-foreground">{property.bathrooms || 1} Baños</span>
                             </div>
-                            <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
-                                <Ruler className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
-                                <span className="text-xs font-medium text-muted-foreground">85 m²</span>
-                            </div>
+                            {property.features?.area && (
+                                <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-muted/30 group-hover:bg-primary/5 transition-colors duration-300">
+                                    <Ruler className="h-5 w-5 mb-1 text-muted-foreground group-hover:text-primary group-hover:scale-110 transition-all duration-300" />
+                                    <span className="text-xs font-medium text-muted-foreground">{property.features.area} m²</span>
+                                </div>
+                            )}
                         </div>
                     </CardContent>
                 </Card>

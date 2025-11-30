@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 const propertySchema = z.object({
@@ -15,25 +14,12 @@ const propertySchema = z.object({
     images: z.array(z.string()).min(1),
     rooms: z.number().min(1).optional(),
     bathrooms: z.number().min(1).optional(),
+    location: z.string().optional(),
 })
 
 export async function publishProperty(prevState: any, formData: FormData) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-
-    if (!user) {
-        return { message: 'Debes iniciar sesión para publicar.' }
-    }
-
-    // Parse data manually because of complex types (images, features)
-    // In a real app, we'd use a more robust form handler or pass JSON
-    // For this example, we assume the client sends a JSON string for complex fields or we handle them differently.
-    // To keep it simple with Server Actions + Client Component, we will receive the raw data from the client component calling this action directly, 
-    // OR we can use the formData if we structure the inputs correctly.
-
-    // Better approach for this complexity: Client Component calls this action with an object, not FormData.
-    // But "use server" actions called from client can accept objects.
-
+    // This function seems unused or placeholder in previous context, 
+    // keeping it simple or returning error as client uses createProperty directly.
     return { message: 'Use client-side handler for this complex mutation' }
 }
 
@@ -43,7 +29,12 @@ export async function createProperty(data: z.infer<typeof propertySchema>) {
 
     if (!user) throw new Error('Unauthorized')
 
-    const { title, description, price, currency, operation_type, address, features, images, rooms, bathrooms } = data
+    const { title, description, price, currency, operation_type, address, features, images, rooms, bathrooms, location } = data
+
+    // Si no hay ubicación especificada, usar Pinamar centro como default razonable
+    // Mejor que (0,0) que cae en el océano Atlántico
+    const DEFAULT_LOCATION = '(-37.1084,-56.8533)' // Pinamar centro
+    const finalLocation = location && location !== '(0,0)' ? location : DEFAULT_LOCATION
 
     // 1. Insert Property
     const { data: property, error: propError } = await supabase
@@ -59,7 +50,7 @@ export async function createProperty(data: z.infer<typeof propertySchema>) {
             features,
             rooms: rooms || 1,
             bathrooms: bathrooms || 1,
-            location: '(0,0)', // Placeholder for now, map integration later
+            location: finalLocation,
         })
         .select()
         .single()
@@ -90,6 +81,11 @@ export async function createProperty(data: z.infer<typeof propertySchema>) {
     return { success: true, propertyId: property.id }
 }
 
+import { r2 } from '@/utils/r2'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
+
+// ... (imports)
+
 export async function deleteProperty(propertyId: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -107,6 +103,41 @@ export async function deleteProperty(propertyId: string) {
         throw new Error('Unauthorized')
     }
 
+    // 1. Get images to delete from R2
+    const { data: images } = await supabase
+        .from('property_images')
+        .select('url')
+        .eq('property_id', propertyId)
+
+    if (images && images.length > 0) {
+        // Extract keys from URLs
+        // URL format: https://domain.com/KEY
+        // We assume the key is the path part of the URL relative to the public bucket URL
+        // Or simply everything after the last '/' if we stored full URLs.
+        // Let's be safer: if we stored the full public URL, we need to strip the domain.
+
+        const deletePromises = images.map(async (img) => {
+            try {
+                // Simple extraction: assume key is "userId/filename.ext" which is usually at the end
+                // If URL is "https://.../userId/uuid.jpg", we want "userId/uuid.jpg"
+                const urlParts = img.url.split('/')
+                // We know our keys are "userId/uuid.ext", so take last 2 parts
+                const key = `${urlParts[urlParts.length - 2]}/${urlParts[urlParts.length - 1]}`
+
+                await r2.send(new DeleteObjectCommand({
+                    Bucket: process.env.R2_BUCKET_NAME,
+                    Key: key
+                }))
+            } catch (err) {
+                console.error('Error deleting file from R2:', err)
+                // Continue even if one fails
+            }
+        })
+
+        await Promise.all(deletePromises)
+    }
+
+    // 2. Delete from DB
     const { error } = await supabase
         .from('properties')
         .delete()

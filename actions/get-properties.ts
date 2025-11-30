@@ -7,6 +7,9 @@ export async function getProperties(filters?: {
   minPrice?: number
   maxPrice?: number
   rooms?: number
+  query?: string
+  page?: number
+  limit?: number
 }) {
   const supabase = await createClient()
 
@@ -37,6 +40,18 @@ export async function getProperties(filters?: {
     query = query.gte('rooms', filters.rooms)
   }
 
+  if (filters?.query) {
+    query = query.or(`title.ilike.%${filters.query}%,address.ilike.%${filters.query}%`)
+  }
+
+  // Pagination logic
+  const page = filters?.page || 1
+  const limit = filters?.limit || 50 // Default to 50 to maintain current feel but prevent massive loads
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+
+  query = query.range(from, to)
+
   const { data, error } = await query
 
   if (error) {
@@ -63,7 +78,8 @@ export async function getPropertyById(id: string) {
         email,
         avatar_url,
         whatsapp,
-        is_verified
+        is_verified,
+        is_identity_verified
       )
     `)
     .eq('id', id)

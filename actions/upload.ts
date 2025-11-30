@@ -14,6 +14,18 @@ export async function getPresignedUrl(fileType: string, fileSize: number) {
         return { error: 'Unauthorized' }
     }
 
+    // Security Validations
+    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg']
+
+    if (!ALLOWED_TYPES.includes(fileType)) {
+        return { error: 'Solo se permiten imágenes (JPG, PNG, WEBP)' }
+    }
+
+    if (fileSize > MAX_SIZE) {
+        return { error: 'El archivo es demasiado grande (Máx 5MB)' }
+    }
+
     const fileExtension = fileType.split('/')[1]
     const key = `${user.id}/${uuidv4()}.${fileExtension}`
 
