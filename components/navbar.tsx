@@ -64,7 +64,7 @@ export function Navbar() {
                 ? "bg-background/80 backdrop-blur-xl border-border/50 shadow-sm py-2"
                 : "bg-transparent border-transparent py-4"
         )}>
-            <div className="container max-w-6xl flex items-center justify-between px-4">
+            <div className="container max-w-7xl flex items-center justify-between px-4">
                 <Link href="/" className="flex items-center gap-2 group">
                     <span className={cn(
                         "font-bold text-2xl tracking-tighter transition-colors duration-300",
@@ -75,7 +75,7 @@ export function Navbar() {
                 </Link>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-6 mr-8">
+                <div className="hidden md:flex items-center gap-6">
                     <Link
                         href="/search"
                         className={cn(
