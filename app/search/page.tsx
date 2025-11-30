@@ -66,7 +66,7 @@ function SearchContent() {
             <div className="flex flex-col md:flex-row gap-6 mb-8 items-end shrink-0 bg-card/50 p-6 rounded-3xl border shadow-sm backdrop-blur-sm">
                 <div className="flex-1 w-full space-y-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Explorar Propiedades</h1>
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Explorar Propiedades</h1>
                         <p className="text-muted-foreground">Encontrá el lugar perfecto para tus próximas vacaciones</p>
                     </div>
                     <div className="flex gap-3">
@@ -74,7 +74,7 @@ function SearchContent() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                                 placeholder="Buscar por ciudad, zona o barrio..."
-                                className="pl-10 h-12 rounded-xl border-slate-200 bg-white focus-visible:ring-primary/20"
+                                className="pl-10 h-12 rounded-xl border-input bg-background focus-visible:ring-primary/20"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
