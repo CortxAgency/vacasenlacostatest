@@ -22,6 +22,7 @@ export async function getProperties(filters?: {
       )
     `)
     .eq('status', 'active')
+    .order('is_featured', { ascending: false })
     .order('created_at', { ascending: false })
 
   if (filters?.operation_type) {

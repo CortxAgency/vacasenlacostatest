@@ -10,15 +10,22 @@ const client = new MercadoPagoConfig({
     options: { timeout: 5000 }
 });
 
-export async function createPreference(propertyId: string) {
+// Planes de Destacado (Configuración)
+const PLANS = {
+    'basic_7': { days: 7, price: 5000, title: 'Destacado Semanal (7 días)' },
+    'standard_15': { days: 15, price: 9000, title: 'Destacado Quincenal (15 días)' },
+    'premium_30': { days: 30, price: 15000, title: 'Destacado Mensual (30 días)' },
+}
+
+export type PlanId = keyof typeof PLANS
+
+export async function createPreference(propertyId: string, planId: PlanId = 'basic_7') {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
-        throw new Error('Unauthorized');
-    }
+    if (!user) throw new Error('Unauthorized');
 
-    // Get property details
+    // Validar propiedad
     const { data: property } = await supabase
         .from('properties')
         .select('*')
@@ -29,6 +36,9 @@ export async function createPreference(propertyId: string) {
         throw new Error('Unauthorized or Property not found');
     }
 
+    const plan = PLANS[planId]
+    if (!plan) throw new Error('Invalid Plan ID');
+
     const preference = new Preference(client);
 
     try {
@@ -36,25 +46,33 @@ export async function createPreference(propertyId: string) {
             body: {
                 items: [
                     {
-                        id: propertyId,
-                        title: `Destacar Propiedad: ${property.title}`,
+                        id: planId,
+                        title: `${plan.title} - ${property.title}`,
                         quantity: 1,
-                        unit_price: 5000, // Precio fijo por ahora (ARS)
+                        unit_price: plan.price,
                         currency_id: 'ARS',
+                        description: `Destacar propiedad ${propertyId} por ${plan.days} días`,
                     }
                 ],
                 back_urls: {
-                    success: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard?status=success&property_id=${propertyId}`,
-                    failure: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard?status=failure`,
-                    pending: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard?status=pending`,
+                    success: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?status=success&property_id=${propertyId}`,
+                    failure: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?status=failure`,
+                    pending: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?status=pending`,
                 },
                 auto_return: 'approved',
+                external_reference: JSON.stringify({
+                    property_id: propertyId,
+                    plan_id: planId,
+                    user_id: user.id,
+                    days: plan.days
+                }),
                 metadata: {
                     property_id: propertyId,
                     user_id: user.id,
+                    plan_id: planId,
                     type: 'feature_property'
                 },
-                // notification_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/webhooks/mercadopago` // We need to implement this later
+                notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/mercadopago`
             }
         });
 

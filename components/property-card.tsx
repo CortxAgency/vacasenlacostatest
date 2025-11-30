@@ -47,7 +47,10 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
             onMouseLeave={() => setIsHovered(false)}
         >
             <Link href={`/property/${property.id}`}>
-                <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-card rounded-[1.5rem] h-full flex flex-col relative">
+                <Card className={cn(
+                    "group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-card rounded-[1.5rem] h-full flex flex-col relative",
+                    property.is_featured && "border-2 border-yellow-400 shadow-yellow-500/20 ring-2 ring-yellow-400/20"
+                )}>
                     {/* Image Container */}
                     <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10 opacity-60 group-hover:opacity-50 transition-opacity duration-500" />
@@ -64,6 +67,12 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
 
                         {/* Badges */}
                         <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-2">
+                            {property.is_featured && (
+                                <Badge className="bg-yellow-400 text-yellow-950 hover:bg-yellow-500 border-0 shadow-lg font-bold">
+                                    <Sparkles className="w-3 h-3 mr-1 fill-current" /> Destacado
+                                </Badge>
+                            )}
+
                             <Badge className={cn(
                                 "font-bold shadow-lg backdrop-blur-md border-0 px-3 py-1",
                                 property.operation_type === 'sale' ? "bg-blue-600/90 hover:bg-blue-600" :
@@ -74,7 +83,7 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
                                     property.operation_type === 'rent' ? 'Alquiler' : 'Temporal'}
                             </Badge>
 
-                            {isNew && (
+                            {isNew && !property.is_featured && (
                                 <Badge className="bg-amber-500/90 hover:bg-amber-500 text-white border-0 shadow-lg backdrop-blur-md animate-pulse">
                                     <Sparkles className="w-3 h-3 mr-1" /> Nuevo
                                 </Badge>
